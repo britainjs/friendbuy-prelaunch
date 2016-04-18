@@ -19,7 +19,7 @@ def init_db():
         db.commit()
 
 
-@app.route('/welcome', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def welcome():
 
     return render_template('welcome.html')
