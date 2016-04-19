@@ -75,7 +75,29 @@ def thanks():
 
 
 def _send_confirmation_email(email, confirmation_link):
-    pass
+    mandrill_client.messages.send(message={
+        "html": "<p><a href='{{ confirmation-link }}'>Confirm</a></p>",
+        "text": " {{ confirmation-link }}",
+        "subject": "Please Confirm Your Email",
+        #TODO replace with settings variable
+        "from_email": "support@friendbuy.com",
+        #TODO replace with settings variable
+        "from_name": "Friendbuy Support",
+        "to": [{ "email": email}],
+        "track_opens": True,
+        "track_clicks": True,
+        "merge_vars": [
+            {
+                "rcpt": email,
+                "vars": [
+                    {
+                        "name": "{{ confirmation_link }}",
+                        "content": confirmation_link
+                    }
+                ]
+            }
+        ]
+    })
 
 
 def _generate_confirmation_token():
