@@ -54,7 +54,7 @@ def welcome():
             confirmation_link = url_for('signup_confirmation', confirmation_token=confirmation_token, email=email)
             _send_confirmation_email(email, confirmation_link)
 
-            return render_template('thanks.html')
+            return redirect(url_for('thanks'))
 
     return render_template('welcome.html')
 
@@ -66,6 +66,11 @@ def share():
 
 @app.route('/signup_confirmation')
 def signup_confirmation():
+    return "Not Implemented"
+
+
+@app.route('/thanks')
+def thanks():
     return "Not Implemented"
 
 
