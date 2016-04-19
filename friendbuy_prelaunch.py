@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, g, redirect, url_for
 from contextlib import closing
+from datetime import datetime
+from uuid import uuid4
 import sqlite3
 import mandrill
 
@@ -49,6 +51,13 @@ def welcome():
 @app.route('/share')
 def share():
     return "Not Implemented"
+
+
+def _generate_confirmation_token():
+    time_token = datetime.now().strftime('%Y%m%d%H%M%S')
+    random_token = str(uuid4()).replace('-', '')[:4]
+    confirmation_token = '%s%s' % (time_token, random_token)
+    return confirmation_token
 
 if __name__ == '__main__':
     app.run()
