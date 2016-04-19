@@ -44,12 +44,19 @@ def welcome():
         results = [row[0] for row in query.fetchall()]
         if len(results) > 0:
             return redirect(url_for('share'))
+        
+
+
 
     return render_template('welcome.html')
 
 
 @app.route('/share')
 def share():
+    return "Not Implemented"
+
+@app.route('/signup_confirmation')
+def signup_confirmation():
     return "Not Implemented"
 
 
