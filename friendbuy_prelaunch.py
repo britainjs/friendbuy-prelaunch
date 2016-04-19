@@ -44,9 +44,17 @@ def welcome():
         results = [row[0] for row in query.fetchall()]
         if len(results) > 0:
             return redirect(url_for('share'))
-        
+        else:
+            # TODO Make sure confirmation token hasn't been used yet.
+            confirmation_token = _generate_confirmation_token()
+            g.db.execute('insert into emails (email, validated, confirmation_token) values (?, ?, ?)',
+                         [email, False, confirmation_token])
+            g.db.commit()
 
+            confirmation_link = url_for('signup_confirmation', confirmation_token=confirmation_token, email=email)
+            _send_confirmation_email(email, confirmation_link)
 
+            return render_template('thanks.html')
 
     return render_template('welcome.html')
 
@@ -55,9 +63,14 @@ def welcome():
 def share():
     return "Not Implemented"
 
+
 @app.route('/signup_confirmation')
 def signup_confirmation():
     return "Not Implemented"
+
+
+def _send_confirmation_email(email, confirmation_link):
+    pass
 
 
 def _generate_confirmation_token():
