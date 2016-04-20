@@ -71,7 +71,7 @@ def signup_confirmation():
 
 @app.route('/thanks')
 def thanks():
-    return "Not Implemented"
+    return render_template("thanks.html")
 
 
 def _send_confirmation_email(email, confirmation_link):
@@ -79,10 +79,8 @@ def _send_confirmation_email(email, confirmation_link):
         "html": "<p><a href='{{ confirmation-link }}'>Confirm</a></p>",
         "text": " {{ confirmation-link }}",
         "subject": "Please Confirm Your Email",
-        #TODO replace with settings variable
-        "from_email": "support@friendbuy.com",
-        #TODO replace with settings variable
-        "from_name": "Friendbuy Support",
+        "from_email": app.config['FROM_EMAIL_ADDRESS'],
+        "from_name": app.config['FROM_NAME'],
         "to": [{ "email": email}],
         "track_opens": True,
         "track_clicks": True,
