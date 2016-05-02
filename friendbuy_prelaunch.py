@@ -51,7 +51,8 @@ def welcome():
                          [email, False, confirmation_token])
             g.db.commit()
 
-            confirmation_link = url_for('signup_confirmation', confirmation_token=confirmation_token, email=email)
+            confirmation_link = url_for('signup_confirmation', confirmation_token=confirmation_token, email=email,
+                                        _external=True)
             _send_confirmation_email(email, confirmation_link)
 
             return redirect(url_for('thanks'))
@@ -66,7 +67,18 @@ def share():
 
 @app.route('/signup_confirmation')
 def signup_confirmation():
-    return "Not Implemented"
+    confirmation_token = request.args.get('confirmation_token')
+
+    user = g.db.execute('select email from emails where confirmation_token = ?', [confirmation_token])
+
+    if not user:
+        email = request.args.get('email')
+        app.logger.debug('No user found for confirmation token {0} and email {1}'.format(confirmation_token, email))
+        return redirect(url_for('welcome'))
+
+    g.db.execute('update emails set verified = true where confirmation token = ?', [confirmation_token])
+
+    return redirect(url_for('share'))
 
 
 @app.route('/thanks')
@@ -76,8 +88,8 @@ def thanks():
 
 def _send_confirmation_email(email, confirmation_link):
     mandrill_client.messages.send(message={
-        "html": "<p><a href='{{ confirmation-link }}'>Confirm</a></p>",
-        "text": " {{ confirmation-link }}",
+        "html": "<p><a href='*|CONFIRMLINK|*'>Confirm</a></p>",
+        "text": "*|CONFIRMLINK|*",
         "subject": "Please Confirm Your Email",
         "from_email": app.config['FROM_EMAIL_ADDRESS'],
         "from_name": app.config['FROM_NAME'],
@@ -89,7 +101,7 @@ def _send_confirmation_email(email, confirmation_link):
                 "rcpt": email,
                 "vars": [
                     {
-                        "name": "{{ confirmation_link }}",
+                        "name": "CONFIRMLINK",
                         "content": confirmation_link
                     }
                 ]
